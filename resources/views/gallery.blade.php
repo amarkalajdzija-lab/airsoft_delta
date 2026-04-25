@@ -4,12 +4,13 @@
 
 @section('content')
 
+@use('Illuminate\Support\Facades\Storage')
+
 <div class="container py-5">
 
     <!-- NASLOV -->
     <div class="text-center mb-5">
         <h1 class="fw-bold">Galerija kluba</h1>
-        <p class="text-muted"></p>
     </div>
 
     <!-- PORUKE -->
@@ -78,9 +79,9 @@
     @forelse($images as $item)
         <div class="col-md-4">
             <div class="card shadow-sm border-0 h-100">
-                <a href="{{ asset($item->image) }}" class="glightbox" data-gallery="gallery1">
+                <a href="{{ Storage::url($item->image) }}" class="glightbox" data-gallery="gallery1">
     <img 
-        src="{{ asset($item->image) }}" 
+        src="{{ Storage::url($item->image) }}" 
         class="card-img-top"
         style="height:250px; object-fit:cover;"
     >
@@ -89,6 +90,14 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ $item->title }}</h5>
                     <p class="text-muted">Fotografija iz aktivnosti kluba</p>
+                    @auth
+<form action="{{ route('gallery.destroy', $item->id) }}" method="POST"
+    onsubmit="return confirm('Obrisati sliku?')">
+    @csrf
+    @method('DELETE')
+    <button class="btn btn-danger btn-sm mt-2">Obriši</button>
+</form>
+@endauth
                 </div>
             </div>
         </div>

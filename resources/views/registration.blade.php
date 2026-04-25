@@ -32,6 +32,22 @@
                     <input type="password" class="form-control" name="password" placeholder="Unesite lozinku">
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label">Potvrda lozinke</label>
+                    <input type="password" class="form-control" name="password_confirmation" placeholder="Ponovite lozinku">
+                </div>
+
+                @if ($errors->any())
+                    <div class="alert alert-danger mt-3">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
+
                 <button type="submit" class="btn btn-success w-100">
                     Registruj se
                 </button>

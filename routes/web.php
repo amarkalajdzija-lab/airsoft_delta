@@ -5,40 +5,17 @@ use App\Http\Controllers\AuthManager;
 use App\Http\Controllers\MemberController;
 use Illuminate\Http\Request;
 use App\Models\Gallery;
-
+use App\Http\Controllers\GalleryController;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
 
-Route::post('/upload', function (Request $request) {
+Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery');
+Route::post('/upload', [GalleryController::class, 'upload'])->name('upload')->middleware('auth');
 
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:10240'
-    ]);
-
-    $file = $request->file('image');
-    $filename = time() . '_' . $file->getClientOriginalName();
-
-    $file->move(public_path('images'), $filename);
-
-    Gallery::create([
-        'title' => $request->title,
-        'image' => 'images/' . $filename
-    ]);
-
-    return redirect()->route('gallery')->with('success', 'Slika uspješno dodana!');
-    
-})->name('upload')->middleware('auth');
-
-
-
-Route::get('/gallery', function () {
-    $images = Gallery::latest()->get();
-    return view('gallery', compact('images'));
-})->name('gallery');
+Route::delete('/gallery/{id}', [GalleryController::class, 'destroy'])->name('gallery.destroy')->middleware('auth');
 
 Route::get('/login', [AuthManager::class, 'login'])->name('login');
 Route::post('/login', [AuthManager::class, 'loginPost'])->name('login.post');
